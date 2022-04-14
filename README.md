@@ -4,7 +4,7 @@ The HubSpot TML Blocks provides sales and marketing analytics liveboards and ad-
  
  # Artifacts 
  
- ## Snowflake 
+ ## Snowflake DDL
  - DIM_DATE.csv
  - SnowFlakeTables Embrace v1.6.sql
  - SnowFlakeViews Embrace v1.6.sql
@@ -23,11 +23,11 @@ The HubSpot TML Blocks provides sales and marketing analytics liveboards and ad-
  
 **SnowFlake**
 - Use the DDL Scripts to create the tables and views in SnowFlake. (SnowFlakeTables Embrace v1.6.sql and SnowFlakeViews Embrace v1.6.sql)
-- Using the API calls detailed in the Cloud Data Warehouse section of this guide load the data into the tables using your ETL.
 - Load the dim_Date table from the CSV file provided
 
 **Extracting Hubspot Data**
 - Refer to the "Hubspot Data Extraction.pdf" for the Snowflake Table and the corresponding API Call and Data Items. 
+- Using the API calls detailed in the HubSpot Data Extraction.pdf to load the data into the tables using your ETL.
 
 **ThoughtSpot**
 - Using Embrace connect to the Views specified in the Cloud Data Warehouse section of this guide.
