@@ -1,6 +1,6 @@
 # TML BLOCKS - HUBSPOT
 
- The HubSpot TML Blocks provides sales and marketing analytics liveboards and ad-hoc search capabilities. Data is extracted from HubSpot using the HubSpot API’s and staged in tables in SnowFlake (or other CDW). A series of views are used to transform the data. ThoughtSpot connects directly to the views using an Embrace connection.
+The HubSpot TML Blocks provides sales and marketing analytics liveboards and ad-hoc search capabilities. Data is extracted from HubSpot using the HubSpot API’s and staged in tables in SnowFlake (or other CDW). A series of views are used to transform the data. ThoughtSpot connects directly to the views using an Embrace connection.
  
  # Artifacts 
  
