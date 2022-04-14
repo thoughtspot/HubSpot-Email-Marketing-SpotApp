@@ -22,7 +22,7 @@ The HubSpot TML Blocks provides sales and marketing analytics liveboards and ad-
  # Implementation Steps 
  
 **SnowFlake**
-- Use the DDL Scripts to create the tables and views in SnowFlake. (SnowFlakeTables Embrace v1.6.sql and SnowFlakeViews Embrace v1.6.sql)
+- Use the DDL Scripts to create the tables and views in SnowFlake. ("SnowFlakeTables Embrace v1.6.sql" and "SnowFlakeViews Embrace v1.6.sql")
 - Load the dim_Date table from the CSV file provided
 
 **Extracting Hubspot Data**
