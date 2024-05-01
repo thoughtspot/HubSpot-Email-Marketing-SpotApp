@@ -1,0 +1,36 @@
+CREATE VIEW "HS_HUBSPOT"."PUBLIC"."HUBSPOT_MARKETING_EMAIL_EVENTS" AS
+SELECT E."APP_ID",E."APP_NAME", DATEADD('MS',E."CREATED",'1970-01-01') AS "CREATED", E."EMAIL_CAMPAIGN_ID", E."ID", E."PORTAL_ID",
+E."RECIPIENT", E."TYPE", DATEADD('MS',E."SENT_BY_CREATED",'1970-01-01') AS "SENT_BY_CREATED", E."SENT_BY_ID", E."BROWSER_NAME", E."LOCATION_CITY",
+E."LOCATION_COUNTRY", E."LOCATION_STATE", E."USER_AGENT", E."DURATION", E."SOURCE", E."PORTAL_SUBSCRIPTION_STATUS",
+E."ATTEMPT", E."RESPONSE",E."URL", E."SUBJECT", E."FROM" AS "FROM_EMAIL",
+E."DROP_MESSAGE", E."CAUSED_BY_ID",
+IFF(CON."TOTAL_REVENUE" >0 AND E.TYPE='SENT' AND CON."FIRST_DEAL_CREATED_DATE">DATEADD('MS',E."CREATED",'1970-01-01'),1,0)  AS "PRE_CUSTOMER_MARKETING_EMAIL",
+TO_DATE(DATEADD('MS',E."CREATED",'1970-01-01')) AS "CREATED_AT_DATE", TO_TIME(DATEADD('MS',E."CREATED",'1970-01-01')) AS "CREATED_AT_TIME"
+FROM "HS_HUBSPOT"."PUBLIC"."HS_EMAIL_EVENTS" E
+LEFT JOIN "HS_HUBSPOT"."PUBLIC"."HS_CONTACTS" CON
+ON E."RECIPIENT"=CON."EMAIL"
+
+CREATE VIEW "HS_HUBSPOT"."PUBLIC"."HUBSPOT_MARKETING_EMAIL_TEMP" AS
+select to_varchar(t0.value:"absoluteUrl") AS "EMAIL_URL", DATEADD('MS',to_varchar(t0.value:"created"),'1970-01-01')  AS "DATE_CREATED",
+to_varchar(t0.value:"fromName") AS "EMAIL_FROM_NAME", to_varchar(t0.value:"name") AS "CAMPAIGN_NAME",
+to_varchar(t0.value:"replyTo") AS "REPLY_TO_EMAIL", to_number(t0.value:"stats"."counters"."bounce") AS "BOUNCE",
+to_number(t0.value:"stats"."counters"."click") AS "CLICK", to_number(t0.value:"stats"."counters"."contactslost") AS "CONTACTS_LOST",
+to_number(t0.value:"stats"."counters"."delivered") AS "DELIVERED", to_number(t0.value:"stats"."counters"."open") AS "OPEN",
+to_number(t0.value:"stats"."counters"."reply") AS "REPLY", to_number(t0.value:"stats"."counters"."sent") AS "SENT",
+to_number(t0.value:"stats"."counters"."unsubscribed") AS "UNSUBSCRIBED", to_number(t0.value:"stats"."ratios"."bounceratio") AS "BOUNCE_RATIO",
+to_double(t0.value:"stats"."ratios"."clickratio") AS "CLICK_RATIO", to_double(t0.value:"stats"."ratios"."clickthroughratio") AS "CLICK_THROUGH_RATIO",
+to_double(t0.value:"stats"."ratios"."openratio") AS "OPEN_RATIO",to_varchar(t0.value:"subject") AS "EMAIL_SUBJECT", to_number(t1.value) AS "CAMPAIGN_ID"
+from "HS_HUBSPOT"."PUBLIC"."HS_MARKETING_EMAILS", lateral flatten (input => "OBJECTS") as t0,
+lateral flatten (input => t0.value:"allEmailCampaignIds") as t1
+
+CREATE VIEW "HS_HUBSPOT"."PUBLIC"."HUBSPOT_MARKETING_CAMPAIGN_SENT_DATE" AS
+SELECT "CAMPAIGN_ID",min ("CREATED") AS "DATE_CAMPAIGN_SENT" FROM "HS_HUBSPOT"."PUBLIC"."HUBSPOT_MARKETING_EMAIL_TEMP" t LEFT JOIN "HS_HUBSPOT"."PUBLIC"."HUBSPOT_MARKETING_EMAIL_EVENTS" ev
+ON t."CAMPAIGN_ID"=ev."EMAIL_CAMPAIGN_ID" GROUP BY "CAMPAIGN_ID"
+
+CREATE VIEW "HS_HUBSPOT"."PUBLIC"."HUBSPOT_MARKETING_EMAIL" AS
+SELECT t.*,s."DATE_CAMPAIGN_SENT",TO_DATE(s."DATE_CAMPAIGN_SENT") AS "CAMPAIGN_DATE",TO_TIME(s."DATE_CAMPAIGN_SENT") AS "CAMPAIGN_TIME"
+FROM "HS_HUBSPOT"."PUBLIC"."HUBSPOT_MARKETING_EMAIL_TEMP" t LEFT JOIN "HS_HUBSPOT"."PUBLIC"."HUBSPOT_MARKETING_CAMPAIGN_SENT_DATE" s
+ON t."CAMPAIGN_ID"=s."CAMPAIGN_ID"
+create or replace TABLE dim_Date (
+	DATE date
+);
